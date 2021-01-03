@@ -8,8 +8,8 @@ WHITE = (255,255,255)
 window_width = 800
 window_height = 700
 paddle_size = 150
-paddle_offset = 20
-paddle_thickness = 20
+paddle_offset = 30
+paddle_thickness = 10
 paddle_start_position = (window_height - paddle_size) /2
 
 display_surf = pygame.display.set_mode((window_width,window_height))
@@ -32,7 +32,6 @@ def drawArena():
     #Draw center lines
     pygame.draw.line(display_surf, WHITE, ((window_width/2),0),((window_width/2),window_height),5)
     pygame.draw.line(display_surf, BLACK, ((window_width/2),0),((window_width/2),window_height),3)
-
 
 class Paddle:
     def __init__(self, x, y, front):
@@ -96,8 +95,8 @@ paddle1 = Paddle(paddle_offset, paddle_start_position,paddle_thickness)
 paddle2 = Paddle(window_width-paddle_offset - paddle_thickness, paddle_start_position,0)
 ball = Ball(window_width/2, window_height/2)
 clock = pygame.time.Clock()
-computer_score = 0
-player_score = 0
+computer_score, player_score = 0,0
+
 
 #Main Game Loop
 while True:
@@ -106,6 +105,8 @@ while True:
         if event.type == pygame.QUIT or keyboard.is_pressed('q'):
             pygame.quit()
             sys.exit()
+        if keyboard.is_pressed('r'):
+            computer_score, player_score = 0,0
     #Paddle Movement
     if keyboard.is_pressed('w'):
         paddle1.move("w")
@@ -122,7 +123,6 @@ while True:
             computer_score += 1
         else:
             player_score += 1
-        del(ball)
         ball = Ball(window_width/2, window_height/2);
     
     drawArena()
