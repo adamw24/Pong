@@ -13,6 +13,12 @@ paddle_start_position = (window_height - paddle_size) /2
 
 display_surf = pygame.display.set_mode((window_width,window_height))
 
+pygame.font.init()
+
+sysfont = pygame.font.get_default_font()
+
+largeFont = pygame.font.SysFont("Century Gothic", 30)
+
 #Main Function
 def main():
     pygame.init()
@@ -90,6 +96,10 @@ ball1 = Ball(window_width/2, window_height/2)
 
 clock = pygame.time.Clock()
 
+
+computer_score = 0
+player_score = 0
+
 #Main Game Loop
 while True:
     clock.tick()
@@ -107,9 +117,17 @@ while True:
         elif paddle2.y + paddle_size/2 > ball1.y:
             paddle2.move("w")
     if (ball1.x > window_width - ball1.radius or ball1.x <ball1.radius):
+        if(ball1.x <ball1.radius):
+            computer_score += 1
+        else:
+            player_score += 1
         del(ball1)
         ball1 = Ball(window_width/2, window_height/2);
     drawArena()
+    c = largeFont.render(str(computer_score), 1, WHITE)
+    p = largeFont.render(str(player_score), 1, WHITE)
+    display_surf.blit(p, (window_width/2 - 25.5 , 10))
+    display_surf.blit(c, (window_width/2 + 10, 10))
     paddle1.draw()
     paddle2.draw()
     ball1.collision(paddle1)
