@@ -56,19 +56,22 @@ class Ball:
     def draw(self):
         pygame.draw.circle(display_surf, WHITE, (self.x,self.y), self.radius, 2)
     
-    def move(self, paddle1, paddle2):
+    def move(self, paddle1, paddle2, time):
         if self.y >= window_height-self.radius or self.y <= self.radius:
             self.horizontal_bounce()
-        if self.y == paddle1.y and self.x<paddle_thickness+paddle_offset and self.x > paddle_offset:
-            self.horizontal_bounce
         if abs(self.x - paddle1.face) <= self.radius and abs(paddle1.y + paddle_size/2-self.y) <= paddle_size/2:
             self.vertical_bounce()
         if abs(paddle2.face-self.x) <= self.radius and abs(paddle2.y + paddle_size/2-self.y) <= paddle_size/2:
             self.vertical_bounce()
-        self.x += math.cos(self.direction) * self.speed
-        self.y -= math.sin(self.direction) * self.speed
+        self.x += math.cos(self.direction) * self.speed *(time/2)
+        self.y -= math.sin(self.direction) * self.speed *(time/2)
         self.draw()
     
+    def collision(self,paddle):
+        if ((self.y >= paddle.y-self.radius and self.y <= paddle.y) or (self.y <= paddle.y + paddle_size + self.radius and self.y >= paddle.y)):
+            if self.x < paddle_thickness+paddle.x and self.x >= paddle.x: 
+                self.horizontal_bounce()
+
     def horizontal_bounce(self):
         self.direction *=-1
         if self.speed < 3:
@@ -84,10 +87,12 @@ paddle1 = Paddle(paddle_offset, paddle_start_position,paddle_thickness)
 paddle2 = Paddle(window_width-paddle_offset - paddle_thickness, paddle_start_position,0)
 
 ball1 = Ball(window_width/2, window_height/2)
-ball2 = Ball(window_width/2, window_height/2)
+
+clock = pygame.time.Clock()
 
 #Main Game Loop
 while True:
+    clock.tick()
     for event in pygame.event.get():
         if event.type == pygame.QUIT or keyboard.is_pressed('q'):
             pygame.quit()
@@ -101,23 +106,16 @@ while True:
             paddle2.move("s")
         elif paddle2.y + paddle_size/2 > ball1.y:
             paddle2.move("w")
-    elif ball2.x>window_width/2 and math.cos(ball2.direction) > 0:
-        if paddle2.y + paddle_size/2 < ball2.y:
-            paddle2.move("s")
-        elif paddle2.y + paddle_size/2 > ball2.y:
-            paddle2.move("w")
-            
     if (ball1.x > window_width - ball1.radius or ball1.x <ball1.radius):
         del(ball1)
         ball1 = Ball(window_width/2, window_height/2);
-    if (ball2.x > window_width - ball2.radius or ball2.x <ball2.radius):
-        del(ball2)
-        ball2 = Ball(window_width/2, window_height/2);
     drawArena()
     paddle1.draw()
     paddle2.draw()
-    ball1.move(paddle1,paddle2)
-    ball2.move(paddle1,paddle2)
+    ball1.collision(paddle1)
+    ball1.collision(paddle2)
+    time = clock.get_rawtime()
+    ball1.move(paddle1,paddle2,time)
     pygame.time.delay(2)
     pygame.display.update()
 
