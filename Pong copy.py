@@ -67,7 +67,6 @@ class Ball:
             self.vertical_bounce()
         self.x += math.cos(self.direction) * self.speed
         self.y -= math.sin(self.direction) * self.speed
-        self.draw()
     
     def horizontal_bounce(self):
         self.direction *=-1
@@ -83,11 +82,13 @@ paddle1 = Paddle(paddle_offset, paddle_start_position,paddle_thickness)
 
 paddle2 = Paddle(window_width-paddle_offset - paddle_thickness, paddle_start_position,0)
 
-ball1 = Ball(window_width/2, window_height/2)
-ball2 = Ball(window_width/2, window_height/2)
+boll = Ball(window_width/2, window_height/2)
+
+clock = pygame.time.Clock()
 
 #Main Game Loop
 while True:
+    clock.tick()
     for event in pygame.event.get():
         if event.type == pygame.QUIT or keyboard.is_pressed('q'):
             pygame.quit()
@@ -96,28 +97,21 @@ while True:
         paddle1.move("w")
     if keyboard.is_pressed('s'):
         paddle1.move("s")
-    if ball1.x>window_width/2 and math.cos(ball1.direction) > 0:
-        if paddle2.y + paddle_size/2 < ball1.y:
-            paddle2.move("s")
-        elif paddle2.y + paddle_size/2 > ball1.y:
-            paddle2.move("w")
-    elif ball2.x>window_width/2 and math.cos(ball2.direction) > 0:
-        if paddle2.y + paddle_size/2 < ball2.y:
-            paddle2.move("s")
-        elif paddle2.y + paddle_size/2 > ball2.y:
-            paddle2.move("w")
-            
-    if (ball1.x > window_width - ball1.radius or ball1.x <ball1.radius):
-        del(ball1)
-        ball1 = Ball(window_width/2, window_height/2);
-    if (ball2.x > window_width - ball2.radius or ball2.x <ball2.radius):
-        del(ball2)
-        ball2 = Ball(window_width/2, window_height/2);
+    if keyboard.is_pressed('i'):
+        paddle2.move("w")
+    if keyboard.is_pressed('k'):
+        paddle2.move("s")
+    if (boll.x > window_width - boll.radius or boll.x <boll.radius):
+        del(boll)
+        boll = Ball(window_width/2, window_height/2);
     drawArena()
     paddle1.draw()
     paddle2.draw()
-    ball1.move(paddle1,paddle2)
-    ball2.move(paddle1,paddle2)
+    time = clock.get_time()
+    boll.move(paddle1,paddle2,time)
+    print(time)
+    boll.draw()
+
     pygame.time.delay(2)
     pygame.display.update()
 
