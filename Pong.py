@@ -109,15 +109,15 @@ while True:
             computer_score, player_score = 0,0
             ball = Ball(window_width/2, window_height/2);
     #Paddle Movement
-    if ball.x<window_width/2 and math.cos(ball.direction) < 0:
+        '''  if ball.x<window_width/2 and math.cos(ball.direction) < 0:
         if paddle1.y + paddle_size/2 < ball.y:
             paddle1.move("s")
         elif paddle1.y + paddle_size/2 > ball.y:
-            paddle1.move("w")
-    """     if keyboard.is_pressed('w'):
+            paddle1.move("w") '''
+    if keyboard.is_pressed('w'):
         paddle1.move("w")
     if keyboard.is_pressed('s'):
-        paddle1.move("s") """
+        paddle1.move("s")
     if ball.x>window_width/2 and math.cos(ball.direction) > 0:
         if paddle2.y + paddle_size/2 < ball.y:
             paddle2.move("s")
