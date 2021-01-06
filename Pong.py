@@ -6,7 +6,7 @@ WHITE = (255,255,255)
 
 #Constants
 window_width = 800
-window_height = 700
+window_height = 600
 paddle_size = 150
 paddle_offset = 30
 paddle_thickness = 10
@@ -65,9 +65,9 @@ class Ball:
     def move(self, paddle1, paddle2, time):
         if self.y >= window_height-self.radius or self.y <= self.radius:
             self.horizontal_bounce()
-        if abs(self.x - paddle1.face) <= self.radius and abs(paddle1.y + paddle_size/2-self.y) <= paddle_size/2:
+        if abs(self.x - paddle1.face- self.radius/2) <= self.radius/2 and abs(paddle1.y + paddle_size/2-self.y) <= paddle_size/2:
             self.vertical_bounce()
-        if abs(paddle2.face-self.x) <= self.radius and abs(paddle2.y + paddle_size/2-self.y) <= paddle_size/2:
+        if abs(paddle2.face-self.x - self.radius/2) <= self.radius/2 and abs(paddle2.y + paddle_size/2-self.y) <= paddle_size/2:
             self.vertical_bounce()
         self.x += math.cos(self.direction) * self.speed *(time/2)
         self.y -= math.sin(self.direction) * self.speed *(time/2)
@@ -81,12 +81,12 @@ class Ball:
 
     def horizontal_bounce(self):
         self.direction *=-1
-        if self.speed < 3:
+        if self.speed < 2.5:
             self.speed += 0.05
 
     def vertical_bounce(self):
         self.direction = (math.pi-self.direction)
-        if self.speed < 3:
+        if self.speed < 2.5:
             self.speed += 0.05
 
 
@@ -107,11 +107,17 @@ while True:
             sys.exit()
         if keyboard.is_pressed('r'):
             computer_score, player_score = 0,0
+            ball = Ball(window_width/2, window_height/2);
     #Paddle Movement
-    if keyboard.is_pressed('w'):
+    if ball.x<window_width/2 and math.cos(ball.direction) < 0:
+        if paddle1.y + paddle_size/2 < ball.y:
+            paddle1.move("s")
+        elif paddle1.y + paddle_size/2 > ball.y:
+            paddle1.move("w")
+    """     if keyboard.is_pressed('w'):
         paddle1.move("w")
     if keyboard.is_pressed('s'):
-        paddle1.move("s")
+        paddle1.move("s") """
     if ball.x>window_width/2 and math.cos(ball.direction) > 0:
         if paddle2.y + paddle_size/2 < ball.y:
             paddle2.move("s")
